@@ -1,7 +1,9 @@
 package org.destro.space;
 
+import org.apache.log4j.Logger;
 import org.destro.space.vo.ResponseVO;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,9 +19,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @RestController
 public class GlobalExceptionHandler {
 
+	private static Logger LOG = Logger.getLogger(GlobalExceptionHandler.class);
+
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(value = Exception.class)
-	public ResponseVO handleException(Exception e) {
+	@ExceptionHandler(value = { ServletRequestBindingException.class, ValidationException.class })
+	public ResponseVO badRequest(Exception e) {
 		return new ResponseVO(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 	}
 
@@ -29,4 +33,11 @@ public class GlobalExceptionHandler {
 		return new ResponseVO(HttpStatus.NOT_FOUND.value(), e.getMessage());
 	}
 
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(value = Exception.class)
+	public ResponseVO error(Exception e) {
+		LOG.error(e.getMessage(), e);
+
+		return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+	}
 }

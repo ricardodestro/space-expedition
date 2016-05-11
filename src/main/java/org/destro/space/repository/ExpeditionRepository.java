@@ -3,6 +3,7 @@ package org.destro.space.repository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.destro.space.ValidationException;
 import org.destro.space.vo.ExpeditionVO;
 import org.destro.space.vo.RobotVO;
 import org.springframework.stereotype.Repository;
@@ -27,12 +28,10 @@ public class ExpeditionRepository {
 	public ExpeditionVO create(String name, int borderX, int borderY) {
 
 		if (map.containsKey(name)) {
-			throw new RepositoryException(
-					"Expedition name already exists, name: " + name);
+			throw new ValidationException("Expedition name already exists, name: " + name);
 		} else if (borderX <= 0 || borderY <= 0) {
-			throw new RepositoryException(
-					"Expedition border X,Y must be > 0, borderX: " + borderX
-							+ ", borderY: " + borderY);
+			throw new ValidationException(
+					"Expedition border X,Y must be > 0, borderX: " + borderX + ", borderY: " + borderY);
 		}
 
 		ExpeditionVO vo = new ExpeditionVO(name, borderX, borderY);
@@ -53,39 +52,25 @@ public class ExpeditionRepository {
 	 * @return
 	 * @throws RepositoryException
 	 */
-	public RobotVO deployRobot(String expeditionName, String name, int landX,
-			int landY, String direction) {
+	public RobotVO deployRobot(String expeditionName, String name, int landX, int landY, String direction) {
 
 		ExpeditionVO expeditionVO = map.get(expeditionName);
 
 		if (expeditionVO == null) {
-			throw new RepositoryException(
-					"Expedition name not exist, expeditionName: "
-							+ expeditionName);
+			throw new ValidationException("Expedition name not exist, expeditionName: " + expeditionName);
+		} else if (expeditionVO.getRobotList().stream().anyMatch(p -> p.getName().equalsIgnoreCase(name))) {
+			throw new ValidationException("Robot name already exists, name: " + name);
 		} else if (expeditionVO.getRobotList().stream()
-				.anyMatch(p -> p.getName().equalsIgnoreCase(name))) {
-			throw new RepositoryException("Robot name already exists, name: "
-					+ name);
-		} else if (expeditionVO
-				.getRobotList()
-				.stream()
 				.anyMatch(p -> (p.getLandX() == landX && p.getLandY() == landY))) {
-			throw new RepositoryException("There is a Robot landed, landX: "
-					+ landX + ", landY: " + landY);
-		} else if (landX > expeditionVO.getBorderX()
-				|| landY > expeditionVO.getBorderY()) {
-			throw new RepositoryException(
-					"Robot landing out of expedition border limit, borderX: "
-							+ expeditionVO.getBorderX() + ", borderY:"
-							+ expeditionVO.getBorderY() + ", landX: " + landX
-							+ ", landY: " + landY);
+			throw new ValidationException("There is a Robot landed, landX: " + landX + ", landY: " + landY);
+		} else if (landX > expeditionVO.getBorderX() || landY > expeditionVO.getBorderY()) {
+			throw new ValidationException(
+					"Robot landing out of expedition border limit, borderX: " + expeditionVO.getBorderX() + ", borderY:"
+							+ expeditionVO.getBorderY() + ", landX: " + landX + ", landY: " + landY);
 		} else if (!direction.toUpperCase().matches("(N|S|E|W)")) {
-			throw new RepositoryException(
-					"Wrong direction for robot (N|S|E|W) direction: "
-							+ direction);
+			throw new ValidationException("Wrong direction for robot (N|S|E|W) direction: " + direction);
 		} else {
-			RobotVO vo = new RobotVO(name, landX, landY,
-					direction.toUpperCase());
+			RobotVO vo = new RobotVO(name, landX, landY, direction.toUpperCase());
 
 			// Adiciona robo na lista
 			expeditionVO.getRobotList().add(vo);
