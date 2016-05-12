@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.destro.space.ValidationException;
+import org.destro.space.ValidationException.ValidationErrorCode;
 import org.destro.space.vo.CommandVO;
 import org.destro.space.vo.ExpeditionVO;
 import org.destro.space.vo.RobotVO;
@@ -35,7 +36,8 @@ public class RobotMoveService {
 	 * @param robotVO
 	 * @param commands
 	 */
-	public void setup(ExpeditionVO expeditionVO, RobotVO robotVO, String commands) {
+	public void setup(ExpeditionVO expeditionVO, RobotVO robotVO,
+			String commands) {
 
 		List<CommandVO> testCommand = new ArrayList<CommandVO>();
 
@@ -85,7 +87,9 @@ public class RobotMoveService {
 				steps++;
 			} else {
 				throw new ValidationException(
-						"Invalid command, pos: " + robotVO.getDirection() + ", commands: " + commands.toString());
+						ValidationErrorCode.INVALID_COMMAND,
+						"Invalid command, pos: " + robotVO.getDirection()
+								+ ", commands: " + commands.toString());
 			}
 
 			// Adiciona na lista de comandos
@@ -110,13 +114,15 @@ public class RobotMoveService {
 	 * @param robotVO
 	 * @param testMove
 	 */
-	private void move(ExpeditionVO expeditionVO, RobotVO robotVO, List<CommandVO> testMove) {
+	private void move(ExpeditionVO expeditionVO, RobotVO robotVO,
+			List<CommandVO> testMove) {
 
 		int x = robotVO.getLandX();
 		int y = robotVO.getLandY();
 		String pos = robotVO.getDirection();
 
-		List<CommandVO> list = testMove != null ? testMove : robotVO.getCommandList();
+		List<CommandVO> list = testMove != null ? testMove : robotVO
+				.getCommandList();
 
 		for (CommandVO cmd : list) {
 
@@ -134,14 +140,19 @@ public class RobotMoveService {
 				x -= cmd.getSteps();
 				break;
 			default:
-				throw new ValidationException("Invalid command");
+				throw new ValidationException(
+						ValidationErrorCode.INVALID_COMMAND, "Invalid command");
 			}
 			pos = cmd.getCommand();
 
-			if (x < 0 || x > expeditionVO.getBorderX() || y < 0 || y > expeditionVO.getBorderY()) {
+			if (x < 0 || x > expeditionVO.getBorderX() || y < 0
+					|| y > expeditionVO.getBorderY()) {
 				throw new ValidationException(
-						"Invalid moviment, out limit of expedition borderX: " + expeditionVO.getBorderX()
-								+ ", borderY: " + expeditionVO.getBorderY() + ", x: " + x + ", y:" + y);
+						ValidationErrorCode.OUT_OF_BORDER,
+						"Invalid moviment, out limit of expedition borderX: "
+								+ expeditionVO.getBorderX() + ", borderY: "
+								+ expeditionVO.getBorderY() + ", x: " + x
+								+ ", y:" + y);
 			}
 		}
 

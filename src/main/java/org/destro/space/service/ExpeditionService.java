@@ -3,6 +3,7 @@ package org.destro.space.service;
 import java.util.Map;
 
 import org.destro.space.ValidationException;
+import org.destro.space.ValidationException.ValidationErrorCode;
 import org.destro.space.repository.ExpeditionRepository;
 import org.destro.space.utils.StringUtils;
 import org.destro.space.vo.ExpeditionVO;
@@ -78,7 +79,7 @@ public class ExpeditionService {
 						StringUtils.normalize(robotName)))
 				.findFirst()
 				.orElseThrow(
-						() -> new ValidationException("Robot not found, name: "
+						() -> new ValidationException(ValidationErrorCode.NAME_NOT_EXISTS, "Robot not found, name: "
 								+ robotName));
 
 		robotMoveService.setup(expeditionVO, robotVO, commands);

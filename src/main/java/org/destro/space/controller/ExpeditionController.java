@@ -31,7 +31,7 @@ public class ExpeditionController {
 	 * @param borderY
 	 * @return
 	 */
-	@RequestMapping(value = "/createExpedition", method = RequestMethod.GET)
+	@RequestMapping(value = "/createExpedition", method = RequestMethod.POST)
 	public ResponseVO createExpedition(
 			@RequestParam(value = "name", required = true) String name,
 			@RequestParam(value = "borderX", required = true) int borderX,
@@ -53,7 +53,7 @@ public class ExpeditionController {
 	 * @param direction
 	 * @return
 	 */
-	@RequestMapping(value = "/deployRobot/{expeditionName}", method = RequestMethod.GET)
+	@RequestMapping(value = "/deployRobot/{expeditionName}", method = RequestMethod.POST)
 	public ResponseVO deployRobot(
 			@PathVariable(value = "expeditionName") String expeditionName,
 			@RequestParam(value = "name", required = true) String name,
@@ -75,7 +75,7 @@ public class ExpeditionController {
 	 * @param commands
 	 * @return
 	 */
-	@RequestMapping(value = "/moveRobot/{expeditionName}/{robotName}", method = RequestMethod.GET)
+	@RequestMapping(value = "/moveRobot/{expeditionName}/{robotName}", method = RequestMethod.POST)
 	public ResponseVO moveRobot(
 			@PathVariable(value = "expeditionName") String expeditionName,
 			@PathVariable(value = "robotName") String robotName,
@@ -88,7 +88,7 @@ public class ExpeditionController {
 	}
 
 	/**
-	 * Movimenta robo
+	 * Retorna todas as expedições
 	 * 
 	 * @param expeditionName
 	 * @param robotName

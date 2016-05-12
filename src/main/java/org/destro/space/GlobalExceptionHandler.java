@@ -22,9 +22,15 @@ public class GlobalExceptionHandler {
 	private static Logger LOG = Logger.getLogger(GlobalExceptionHandler.class);
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(value = { ServletRequestBindingException.class, ValidationException.class })
+	@ExceptionHandler(value = { ServletRequestBindingException.class })
 	public ResponseVO badRequest(Exception e) {
 		return new ResponseVO(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(value = { ValidationException.class })
+	public ResponseVO badRequest(ValidationException e) {
+		return new ResponseVO(e.getErrorCode(), e.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
@@ -38,6 +44,7 @@ public class GlobalExceptionHandler {
 	public ResponseVO error(Exception e) {
 		LOG.error(e.getMessage(), e);
 
-		return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+		return new ResponseVO(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				e.getMessage());
 	}
 }
