@@ -1,7 +1,17 @@
 # space-expedition
-Projeto para criar expedições em outros planetas e enviar robos (sondas) para mapeamento de território
 
+<table border=0>
+<tr>
+<td>
+Projeto para criar expedições em outros planetas e enviar robos (sondas) para mapeamento de território
+<br>
+<br>
 Os comandos para criar expedições, deploy de robos e movimento utilizam chamadas REST
+</td>
+<td>
+<p style="text-align: right"><img src="http://cdn.graphicsfactory.com/clip-art/image_files/image/9/746749-offroader.gif"/></p>
+</td>
+</table>
 
 **Operação**
 
@@ -29,51 +39,49 @@ SpringBoot subirá um embeded TOMCAT na porta 8080
 
 # API #
 * * *
-##Criar uma expedição##
+####[API] Criar uma expedição####
 
 Cria uma nova expedição informando o tamanho do território a ser mapeado
 
-###URL###
+#######URL#######
 /createExpedition
 
-###Method###
+#####Method#####
 POST
   
-###Parameters###
+#####Parameters#####
 * String name `required`
 * Integer borderX `required`
 * Integer borderY `required`
 
-###Return###
+#####Return#####
 * JSON
 
-###Response###
+#####Response#####
 * * *
-* * *
-##Enviar um robo para expedição##
+##[API] Enviar um robo para expedição##
 
 Efetua deploy de um novo robo para expedição
 
-###URL###
+#####URL#####
 /deployRobot/:expeditionName
 
-###Method###
+#####Method#####
 POST
   
-###Parameters###
+#####Parameters#####
 * String expeditionName `required`
 * String name `required`
 * Integer landX `required`
 * Integer landY `required`
 * String direction `required`
 
-###Return###
+#####Return#####
 * JSON
 
-###Response###
+#####Response#####
 * * *
-* * *
-##Movimentar um robo em expedição##
+##[API] Movimentar um robo em expedição##
 
 Movimenta robo de acordo com os comandos abaixo:
 
@@ -81,38 +89,48 @@ L gira o robo 90° para esquerda
 R gira o robo 90° para direito  
 M move o robo  
 
-###URL###
+#####URL#####
 /moveRobot/:expeditionName/:robotName
 
-###Method###
+#####Method#####
 POST
   
-###Parameters###
+#####Parameters#####
 * String expeditionName `required`
 * String robotName `required`
 * String commands `required`
 
-###Return###
+#####Return#####
 * JSON
 
-###Response###
+#####Response#####
 * * *
-* * *
-##Receber todas as expedições##
+##[API] Receber todas as expedições##
 
 Retorna todas as expedições
 
-###URL###
+#####URL#####
 /allExpeditions
 
-###Method###
+#####Method#####
 GET
   
-###Parameters###
+#####Parameters#####
 * None
 
-###Return###
+#####Return#####
 * JSON
 
-###Response###
+#####Response#####
 * * *
+
+# Tabela com erros de validação #
+
+| CODE | Message |
+| ---- | ------- |
+| 100  | Name Already exists |
+| 200  | Out of border |
+| 300  | Not allowed to land |
+| 400  | Invalid Direction |
+| 500  | Name Already exists |
+| 600  | Invalid command |
