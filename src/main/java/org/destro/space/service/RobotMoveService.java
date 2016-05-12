@@ -98,6 +98,7 @@ public class RobotMoveService {
 		}
 
 		// Simula movimento para validar colisões
+		// TODO Implementar validação de colisão com outros robos
 		this.move(expeditionVO, robotVO, testCommand);
 
 		// Limpa ultimos movimento
