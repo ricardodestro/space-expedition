@@ -27,19 +27,19 @@ Operação precisa executar basicamente 3 comandos
 * Robos não podem aterrizar no mesmo local de um robo já aterrizado
 * Movimentos dos robos não podem ultrapassar os limites da expedição
 
-# Instalação #
+### Instalação ###
 Projeto está configurado com Maven, efetuar a atualização e instalação pelo Maven
 
-# Execução #
+### Execução ###
 Execute o método Main da classe *org.destro.space.SpaceApplication*
 
 SpringBoot subirá um embeded TOMCAT na porta 8080
 
 *http://localhost:8080*
 
-# API #
+### API ###
 * * *
-####[API] Criar uma expedição####
+#####[API] Criar uma expedição#####
 
 Cria uma nova expedição informando o tamanho do território a ser mapeado
 
@@ -59,7 +59,7 @@ POST
 
 #####Response#####
 * * *
-##[API] Enviar um robo para expedição##
+####[API] Enviar um robo para expedição####
 
 Efetua deploy de um novo robo para expedição
 
@@ -81,7 +81,7 @@ POST
 
 #####Response#####
 * * *
-##[API] Movimentar um robo em expedição##
+####[API] Movimentar um robo em expedição####
 
 Movimenta robo de acordo com os comandos abaixo:
 
@@ -105,7 +105,7 @@ POST
 
 #####Response#####
 * * *
-##[API] Receber todas as expedições##
+####[API] Receber todas as expedições####
 
 Retorna todas as expedições
 
@@ -124,7 +124,7 @@ GET
 #####Response#####
 * * *
 
-# Tabela com erros de validação #
+### Tabela com erros de validação ###
 
 | CODE | Message |
 | ---- | ------- |
