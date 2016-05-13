@@ -47,7 +47,7 @@ public class ExpeditionControllerTest {
 		ResultActions result = mockMvc.perform(
 				MockMvcRequestBuilders.post("/createExpedition")
 						.param("name", "exp0").param("borderX", "9")
-						.param("borderY", "9")).andExpect(status().isOk());
+						.param("borderY", "9")).andExpect(status().isOk()).andDo(print());
 
 		result.andExpect(jsonPath("code").value(200));
 		result.andExpect(jsonPath("entity").exists());
@@ -99,7 +99,7 @@ public class ExpeditionControllerTest {
 				MockMvcRequestBuilders.post("/deployRobot/exp1")
 						.param("name", "robot1").param("landX", "3")
 						.param("landY", "3").param("direction", "N"))
-				.andExpect(status().isOk());
+				.andExpect(status().isOk()).andDo(print());
 
 		result.andExpect(jsonPath("code").value(200));
 		result.andExpect(jsonPath("entity").exists());
@@ -230,7 +230,7 @@ public class ExpeditionControllerTest {
 
 		ResultActions result = mockMvc.perform(
 				MockMvcRequestBuilders.post("/moveRobot/exp20/robot20").param(
-						"commands", "MMRMMRMRRM")).andExpect(status().isOk());
+						"commands", "MMRMMRMRRM")).andExpect(status().isOk()).andDo(print());
 
 		result.andExpect(jsonPath("code").value(200)).andDo(print());
 		result.andExpect(jsonPath("entity").exists());
@@ -258,11 +258,45 @@ public class ExpeditionControllerTest {
 
 		ResultActions result = mockMvc.perform(
 				MockMvcRequestBuilders.post("/moveRobot/exp11/robot11").param(
-						"commands", "MMRMMRMRRMMMMMMMMM")).andExpect(
+						"commands", "MMMMMMMMMMMMMMMMMM")).andExpect(
 				status().is4xxClientError());
 
 		result.andExpect(jsonPath("code").value(
 				ValidationErrorCode.OUT_OF_BORDER.getCode()));
+		result.andExpect(jsonPath("entity").isEmpty());
+	}
+
+	@Test
+	public void moveRobotInvalidWithCollisionMove() throws Exception {
+
+		// Cria expedição
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/createExpedition")
+						.param("name", "exp11").param("borderX", "11")
+						.param("borderY", "11")).andExpect(status().isOk());
+
+		// Cria robo 1
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/deployRobot/exp11")
+						.param("name", "robot11").param("landX", "3")
+						.param("landY", "3").param("direction", "E"))
+				.andExpect(status().isOk());
+
+		// Cria robo 2
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/deployRobot/exp11")
+						.param("name", "robot12").param("landX", "3")
+						.param("landY", "2").param("direction", "N"))
+				.andExpect(status().isOk());
+
+		// Move robo 2 para mesmo posição do robo 1
+		ResultActions result = mockMvc.perform(
+				MockMvcRequestBuilders.post("/moveRobot/exp11/robot12").param(
+						"commands", "M"))
+				.andExpect(status().is4xxClientError());
+
+		result.andExpect(jsonPath("code").value(
+				ValidationErrorCode.IMMINENT_COLLISION.getCode()));
 		result.andExpect(jsonPath("entity").isEmpty());
 	}
 
@@ -275,9 +309,19 @@ public class ExpeditionControllerTest {
 						.param("name", "exp1000").param("borderX", "5")
 						.param("borderY", "5")).andExpect(status().isOk());
 
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/createExpedition")
+						.param("name", "exp2000").param("borderX", "7")
+						.param("borderY", "7")).andExpect(status().isOk());
+
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/createExpedition")
+						.param("name", "exp3000").param("borderX", "9")
+						.param("borderY", "9")).andExpect(status().isOk());
+
 		ResultActions result = mockMvc.perform(
 				MockMvcRequestBuilders.get("/allExpeditions")).andExpect(
-				status().isOk());
+				status().isOk()).andDo(print());
 
 		result.andExpect(jsonPath("code").value(200));
 		result.andExpect(jsonPath("entity").isMap());

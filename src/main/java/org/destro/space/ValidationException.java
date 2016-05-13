@@ -29,7 +29,8 @@ public class ValidationException extends RuntimeException {
 		NOT_ALLOWED_TO_LAND(300, "Not allowed to land"),
 		INVALID_DIRECTION(400, "Invalid Direction"),
 		NAME_NOT_EXISTS(500, "Name Already exists"),
-		INVALID_COMMAND(600, "Invalid command");
+		INVALID_COMMAND(600, "Invalid command"),
+		IMMINENT_COLLISION(700, "Imminent collision");
 
 		private int code;
 

@@ -5,9 +5,12 @@ import java.util.List;
 
 import org.destro.space.ValidationException;
 import org.destro.space.ValidationException.ValidationErrorCode;
+import org.destro.space.repository.ExpeditionRepository;
+import org.destro.space.utils.StringUtils;
 import org.destro.space.vo.CommandVO;
 import org.destro.space.vo.ExpeditionVO;
 import org.destro.space.vo.RobotVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +20,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RobotMoveService {
+
+	@Autowired
+	private ExpeditionRepository expeditionRepository;
 
 	interface Commands {
 		String NORTH = "N";
@@ -30,13 +36,45 @@ public class RobotMoveService {
 	}
 
 	/**
+	 * Movimenta robo
+	 * 
+	 * @param expeditionName
+	 * @param robotName
+	 * @param commands
+	 * @return
+	 */
+	public RobotVO moveRobot(String expeditionName, String robotName,
+			String commands) {
+
+		ExpeditionVO expeditionVO = expeditionRepository
+				.getExpedition(StringUtils.normalize(expeditionName));
+
+		RobotVO robotVO = expeditionVO
+				.getRobotList()
+				.stream()
+				.filter(p -> p.getName().equals(
+						StringUtils.normalize(robotName)))
+				.findFirst()
+				.orElseThrow(
+						() -> new ValidationException(
+								ValidationErrorCode.NAME_NOT_EXISTS,
+								"Robot not found, name: " + robotName));
+
+		this.setup(expeditionVO, robotVO, commands);
+
+		this.move(expeditionVO, robotVO);
+
+		return robotVO;
+	}
+
+	/**
 	 * Setup para os movimentos do robo
 	 * 
 	 * @param expeditionVO
 	 * @param robotVO
 	 * @param commands
 	 */
-	public void setup(ExpeditionVO expeditionVO, RobotVO robotVO,
+	private void setup(ExpeditionVO expeditionVO, RobotVO robotVO,
 			String commands) {
 
 		List<CommandVO> testCommand = new ArrayList<CommandVO>();
@@ -155,6 +193,10 @@ public class RobotMoveService {
 								+ expeditionVO.getBorderY() + ", x: " + x
 								+ ", y:" + y);
 			}
+
+			// Verifica possível colisão
+			checkCollision(robotVO, x, y);
+
 		}
 
 		// Atualiza dados de posição do robo se não for teste
@@ -166,11 +208,33 @@ public class RobotMoveService {
 	}
 
 	/**
+	 * Verificar se robo colidirá com outro robo
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	private void checkCollision(RobotVO robotVO, int x, int y) {
+		for (ExpeditionVO e : expeditionRepository.getAllExpedition().values()) {
+			e.getRobotList().forEach(
+					p -> {
+						if (!p.equals(robotVO) && p.getLandX() == x
+								&& p.getLandY() == y) {
+							throw new ValidationException(
+									ValidationErrorCode.IMMINENT_COLLISION,
+									"Robot name: " + p.getName()
+											+ ", expeditionName: "
+											+ e.getName());
+						}
+					});
+		}
+	}
+
+	/**
 	 * Move o robo definitivamente
 	 * 
 	 * @param robotVO
 	 */
-	public void move(ExpeditionVO expeditionVO, RobotVO robotVO) {
+	private void move(ExpeditionVO expeditionVO, RobotVO robotVO) {
 
 		this.move(expeditionVO, robotVO, null);
 	}

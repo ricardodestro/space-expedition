@@ -1,6 +1,7 @@
 package org.destro.space.controller;
 
 import org.destro.space.service.ExpeditionService;
+import org.destro.space.service.RobotMoveService;
 import org.destro.space.vo.ExpeditionVO;
 import org.destro.space.vo.ResponseVO;
 import org.destro.space.vo.RobotVO;
@@ -22,6 +23,9 @@ public class ExpeditionController {
 
 	@Autowired
 	private ExpeditionService expeditionService;
+
+	@Autowired
+	private RobotMoveService robotMoveService;
 
 	/**
 	 * Cria expedição
@@ -81,8 +85,8 @@ public class ExpeditionController {
 			@PathVariable(value = "robotName") String robotName,
 			@RequestParam(value = "commands", required = true) String commands) {
 
-		RobotVO robotVO = expeditionService.moveRobot(expeditionName,
-				robotName, commands);
+		RobotVO robotVO = robotMoveService.moveRobot(expeditionName, robotName,
+				commands);
 
 		return new ResponseVO(HttpStatus.OK.value(), "OK", robotVO);
 	}

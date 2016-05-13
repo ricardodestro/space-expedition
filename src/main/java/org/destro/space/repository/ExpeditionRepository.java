@@ -87,7 +87,7 @@ public class ExpeditionRepository {
 					"Wrong direction for robot (N|S|E|W) direction: "
 							+ direction);
 		} else {
-			RobotVO vo = new RobotVO(name, landX, landY,
+			RobotVO vo = new RobotVO(expeditionName, name, landX, landY,
 					direction.toUpperCase());
 
 			// Adiciona robo na lista

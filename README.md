@@ -58,6 +58,17 @@ POST
 * JSON
 
 #####Response#####
+    {
+      "code": 200,
+      "message": "OK",
+      "entity": {
+        "name": "exp1",
+        "borderX": 5,
+        "borderY": 5,
+        "robotList": []
+      }
+    }
+
 * * *
 ####[API] Enviar um robo para expedição####
 
@@ -80,6 +91,19 @@ POST
 * JSON
 
 #####Response#####
+	{
+	  "code": 200,
+	  "message": "OK",
+	  "entity": {
+	    "expeditionName": "exp1",
+	    "name": "robot1",
+	    "landX": 3,
+	    "landY": 3,
+	    "direction": "N",
+	    "commandList": []
+	  }
+	}
+
 * * *
 ####[API] Movimentar um robo em expedição####
 
@@ -104,6 +128,60 @@ POST
 * JSON
 
 #####Response#####
+	{
+	  "code": 200,
+	  "message": "OK",
+	  "entity": {
+	    "expeditionName": "exp1",
+	    "name": "robot1",
+	    "landX": 3,
+	    "landY": 3,
+	    "direction": "N",
+	    "commandList": [
+	      {
+	        "command": "E",
+	        "steps": 1
+	      },
+	      {
+	        "command": "E",
+	        "steps": 1
+	      },
+	      {
+	        "command": "S",
+	        "steps": 0
+	      },
+	      {
+	        "command": "S",
+	        "steps": 1
+	      },
+	      {
+	        "command": "S",
+	        "steps": 1
+	      },
+	      {
+	        "command": "W",
+	        "steps": 0
+	      },
+	      {
+	        "command": "W",
+	        "steps": 1
+	      },
+	      {
+	        "command": "N",
+	        "steps": 0
+	      },
+	      {
+	        "command": "E",
+	        "steps": 0
+	      },
+	      {
+	        "command": "E",
+	        "steps": 1
+	      }
+	    ]
+	  }
+	}
+
 * * *
 ####[API] Receber todas as expedições####
 
@@ -122,6 +200,30 @@ GET
 * JSON
 
 #####Response#####
+	{
+	  "code": 200,
+	  "message": "OK",
+	  "entity": {
+	    "exp1000": {
+	      "name": "exp1000",
+	      "borderX": 5,
+	      "borderY": 5,
+	      "robotList": []
+	    },
+	    "exp2000": {
+	      "name": "exp2000",
+	      "borderX": 7,
+	      "borderY": 7,
+	      "robotList": []
+	    },
+	    "exp3000": {
+	      "name": "exp3000",
+	      "borderX": 9,
+	      "borderY": 9,
+	      "robotList": []
+	    }
+	  }
+	}
 * * *
 
 ### Tabela com erros de validação ###
@@ -134,3 +236,4 @@ GET
 | 400  | Invalid Direction |
 | 500  | Name Already exists |
 | 600  | Invalid command |
+| 700  | Imminent collision |

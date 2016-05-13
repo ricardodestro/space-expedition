@@ -2,8 +2,6 @@ package org.destro.space.service;
 
 import java.util.Map;
 
-import org.destro.space.ValidationException;
-import org.destro.space.ValidationException.ValidationErrorCode;
 import org.destro.space.repository.ExpeditionRepository;
 import org.destro.space.utils.StringUtils;
 import org.destro.space.vo.ExpeditionVO;
@@ -56,37 +54,6 @@ public class ExpeditionService {
 		return expeditionRepository.deployRobot(
 				StringUtils.normalize(expeditionName),
 				StringUtils.normalize(name), landX, landY, direction);
-	}
-
-	/**
-	 * Movimenta robo
-	 * 
-	 * @param expeditionName
-	 * @param robotName
-	 * @param commands
-	 * @return
-	 */
-	public RobotVO moveRobot(String expeditionName, String robotName,
-			String commands) {
-
-		ExpeditionVO expeditionVO = expeditionRepository
-				.getExpedition(StringUtils.normalize(expeditionName));
-
-		RobotVO robotVO = expeditionVO
-				.getRobotList()
-				.stream()
-				.filter(p -> p.getName().equals(
-						StringUtils.normalize(robotName)))
-				.findFirst()
-				.orElseThrow(
-						() -> new ValidationException(ValidationErrorCode.NAME_NOT_EXISTS, "Robot not found, name: "
-								+ robotName));
-
-		robotMoveService.setup(expeditionVO, robotVO, commands);
-
-		robotMoveService.move(expeditionVO, robotVO);
-
-		return robotVO;
 	}
 
 	/**
